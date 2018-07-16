@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Maps extends Component {
-  static defaultProps = {
-    locations: this.locations,
-    map: this.map,
-    infoWindow: this.infoWindow
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      map: '',
+    }
+
+    this.initMap = this.initMap.bind(this);
+  }
+
+  static propTypes = {
+    locations: PropTypes.array.isRequired,
   }
 
   componentDidMount() {
@@ -14,6 +23,7 @@ class Maps extends Component {
   }
 
   initMap() {
+    // initialize the map in the map div
     const mapContainer = document.querySelector('.map');
     const map = new window.google.maps.Map(
       mapContainer, {
@@ -21,6 +31,22 @@ class Maps extends Component {
         zoom: 11
       }
     );
+
+    this.setState({
+      map: map
+    })
+
+    // set the markers
+    this.props.locations.map((location, key) => {
+      console.log(location);
+      const marker = new window.google.maps.Marker({
+        position: new window.google.maps.LatLng(
+          location.lat,
+          location.lng
+        ),
+        map: map
+      });
+    });
   }
 
   render() {
