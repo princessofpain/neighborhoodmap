@@ -7,6 +7,7 @@ class Maps extends Component {
     super(props);
     this.state = {
       map: '',
+      infoWindow: ''
     }
 
     this.initMap = this.initMap.bind(this);
@@ -23,6 +24,7 @@ class Maps extends Component {
   }
 
   initMap() {
+    const scope = this;
     // initialize the map in the map div
     const mapContainer = document.querySelector('.map');
     const map = new window.google.maps.Map(
@@ -32,13 +34,17 @@ class Maps extends Component {
       }
     );
 
+    // intialize infoWindow from google api
+    const googleInfoWindow = new window.google.maps.InfoWindow({});
+
+    // set the state with the initialized map
     this.setState({
-      map: map
-    })
+      map: map,
+      infoWindow: googleInfoWindow
+    });
 
     // set the markers
     this.props.locations.map((location, key) => {
-      console.log(location);
       const marker = new window.google.maps.Marker({
         position: new window.google.maps.LatLng(
           location.lat,
@@ -46,12 +52,28 @@ class Maps extends Component {
         ),
         map: map
       });
+
+      // add an event listener to each marker
+      marker.addListener('click', function() {
+        scope.showinfowindow(marker, location);
+      });
+
+      const details = location.details;
+      location.marker = marker;
     });
   }
 
+
+  // display infoWindow for a certain marker
+  showinfowindow(marker, location) {
+    this.state.infoWindow.open(this.state.map, marker);
+    this.state.infoWindow.setContent(location.title + '<br />' + location.details)
+  }
+
+
   render() {
     return(
-      <div className='map' style={{ height: '100%', width: '70%', position:'absolute', marginLeft:'30%' }}>
+      <div className='map' style={{ height: '100%', width: '70%', position :'absolute', marginLeft:'30%' }}>
       </div>
     )
   }
