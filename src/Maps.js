@@ -69,7 +69,6 @@ class Maps extends Component {
   // display infoWindow for a certain marker
   showinfowindow(marker, location) {
     this.state.infoWindow.open(this.state.map, marker);
-    this.state.infoWindow.setContent(location.title + '<br />' + location.details)
   }
 
   fetchLocationInfo(marker, location) {
@@ -80,16 +79,16 @@ class Maps extends Component {
 
     const lat = location.lat.toFixed(2);
     const lng = location.lng.toFixed(2);
-    console.log(lat + ', ' + lng);
     const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=1&query=${location.title}`;
 
     fetch(request).then(function(response) {
       response.json().then(function(data) {
-        console.log(data);
+        const location = data.response.venues[0];
+        scope.state.infoWindow.setContent(`${location.name}<br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`)
       });
     })
     .catch(function(err) {
-      console.log('error');
+      scope.state.infoWindow.setContent('Data can´t be loaded');
     })
   }
 
