@@ -83,8 +83,12 @@ class Maps extends Component {
 
     fetch(request).then(function(response) {
       response.json().then(function(data) {
+        // console.log(data);
         const location = data.response.venues[0];
-        scope.state.infoWindow.setContent(`${location.name}<br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`)
+        scope.state.infoWindow.setContent(`${location.name}<br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`);
+
+        scope.setListData(data);
+
       });
     })
     .catch(function(err) {
@@ -92,11 +96,46 @@ class Maps extends Component {
     })
   }
 
+  // set list information
+  setListData(data) {
+    // remove information of the old location
+    if(document.querySelector('.information-container')) {
+      const oldLocation = document.querySelector('.information-container');
+      oldLocation.remove();
+    }
+
+    // set information of the new location
+    const location = data.response.venues[0];
+    const allLocations = document.querySelectorAll('li');
+
+    // check which location is active by comparing the location name with the text content
+    for(let i = 0; i < allLocations.length; i++) {
+      const activeLocation = allLocations[i];
+
+      if(activeLocation.textContent === location.name) {
+        const information = document.createElement('p');
+        information.setAttribute('class', 'information-container');
+        information.innerText = `${location.categories[0].name}\n${location.location.address}\n${location.location.postalCode} ${location.location.city}`;
+
+        activeLocation.append(information);
+      }
+    }
+  }
 
   render() {
     return(
       <div style = {{ display:'flex', wrap:'row' }}>
-        <ListView/>
+        <div className='list-view' style={{ height: '100%', width:'35%', backgroundColor: 'red' }}>
+          <ul className='venue-list'>
+            {this.props.locations.map((location, key) => {
+              return(
+                <li
+                  key={key}
+                >{location.title}</li>
+              )
+            })}
+          </ul>
+        </div>
         <div className='map' style={{ height: '100%', width: '70%', position :'absolute', marginLeft:'30%' }}>
         </div>
       </div>
