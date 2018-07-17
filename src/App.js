@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Maps from './Maps.js';
-import ListView from './ListView.js';
 
 class App extends Component {
  state = {
@@ -17,8 +16,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className='App' style = {{ display:'flex', wrap:'row' }}>
-        <ListView/>
+      <div className='App'>
         <Maps locations={this.state.locations}/>
       </div>
     );
