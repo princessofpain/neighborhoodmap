@@ -52,8 +52,11 @@ class ListView extends Component {
     return (
       <div className='list-view'>
         <input
-          className= 'search'
-          type= 'text'
+          // aria specification
+          role='search'
+
+          className='search'
+          type='text'
           value={this.state.query}
           onChange={this.filterLocations}
           placeholder={'Type location'}

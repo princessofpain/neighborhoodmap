@@ -5,6 +5,10 @@ class Location extends Component {
   render() {
     return (
       <li
+        // aria specification
+        role='button'
+        tabIndex='0'
+
         className="location"
         onKeyPress={this.props.showinfowindow.bind(
           this,
