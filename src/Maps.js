@@ -108,6 +108,10 @@ class Maps extends Component {
     const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=5`;
 
     fetch(request).then(function(response) {
+      if(response.status !== 200) {
+      scope.state.infowindow.setContent('Failure in loading the data. Data can´t be reached.');
+      return;
+    }
       response.json().then(function(data) {
         data.response.venues.forEach(function(venue) {
           locations.forEach(function(location) {
