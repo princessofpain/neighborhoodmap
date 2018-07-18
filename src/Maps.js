@@ -140,7 +140,7 @@ class Maps extends Component {
     return(
       <div style = {{ display:'flex', wrap:'row' }}>
         <div style={{ height: '100%', width:'35%', backgroundColor: 'red' }}>
-          <ListView locations={this.props.locations} showinfowindow={this.showinfowindow} closeinfoWindow={this.closeInfoWindow}/>
+          <ListView locations={this.props.locations} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeinfoWindow={this.closeInfoWindow}/>
         </div>
         <div className='map' style={{ height: '100%', width: '70%', position :'absolute', marginLeft:'30%' }}>
         </div>

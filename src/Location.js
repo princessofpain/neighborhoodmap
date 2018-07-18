@@ -8,11 +8,11 @@ class Location extends Component {
         className="location"
         onKeyPress={this.props.showinfowindow.bind(
           this,
-          this.props.data.marker
+          this.props.location.marker
         )}
-        onClick={this.props.showinfowindow.bind(this, this.props.data.marker)}
+        onClick={this.props.showinfowindow.bind(this, this.props.location.marker)}
       >
-        {this.props.data.title}
+        {this.props.location.title}
       </li>
     );
   }
