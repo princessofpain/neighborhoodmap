@@ -144,7 +144,7 @@ class Maps extends Component {
     return(
       <div className='flex-container' role='<main></main>'>
         <div className='list-container'>
-          <ListView locations={this.props.locations} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeinfoWindow={this.closeInfoWindow}/>
+          <ListView locations={this.props.locations} infoWindowState={this.state.infoWindow} markerAnimation={this.state.markerAnimation} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeInfoWindow={this.closeInfoWindow}/>
         </div>
         <div className='map'>
         </div>

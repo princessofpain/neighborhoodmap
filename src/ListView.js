@@ -19,7 +19,11 @@ class ListView extends Component {
   }
 
   filterLocations(e) {
-    this.props.closeinfoWindow;
+    this.props.infoWindowState.close();
+
+    if(this.props.markerAnimation){
+      this.props.markerAnimation.setAnimation(null);
+    }
 
     const { value } = e.target;
     let locationsArray = [];
