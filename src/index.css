@@ -3,3 +3,8 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.streetview-container {
+  width: 270px;
+  height: 150px;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ListView from './ListView.js';
+import ListView from './ListView';
 
 class Maps extends Component {
 
@@ -8,14 +8,14 @@ class Maps extends Component {
     super(props);
     this.state = {
       map: '',
-      infoWindow: ''
+      infoWindow: '',
+      markerAnimation: '',
+      locationsNew: []
     }
 
     this.initMap = this.initMap.bind(this);
-  }
-
-  static propTypes = {
-    locations: PropTypes.array.isRequired,
+    this.showinfowindow = this.showinfowindow.bind(this);
+    this.closeInfoWindow = this.closeInfoWindow.bind(this);
   }
 
   componentDidMount() {
@@ -31,7 +31,8 @@ class Maps extends Component {
     const map = new window.google.maps.Map(
       mapContainer, {
         center: { lat: 52.520645, lng: 13.409779},
-        zoom: 11
+        zoom: 11,
+        mapTypeControl: false
       }
     );
 
@@ -44,51 +45,78 @@ class Maps extends Component {
       infoWindow: googleInfoWindow
     });
 
-    // set the markers
+    window.google.maps.event.addListener(googleInfoWindow, "closeclick", function() {
+      scope.closeInfoWindow();
+    });
+
+    window.google.maps.event.addListener(map, "click", function() {
+      scope.closeInfoWindow();
+    });
+
+    // set markers
+    const locationsNew = this.state.locationsNew;
     this.props.locations.map((location, key) => {
       const marker = new window.google.maps.Marker({
         position: new window.google.maps.LatLng(
           location.lat,
           location.lng
         ),
-        map: map
+        map: this.state.map,
       });
 
       // add an event listener to each marker
       marker.addListener('click', function() {
-        scope.showinfowindow(marker, location);
-        scope.fetchLocationInfo(marker, location);
+        scope.showinfowindow(marker);
       });
 
-      const details = location.details;
       location.marker = marker;
+      location.display = true;
+      locationsNew.push(location);
     });
+    this.setState({
+      locationsNew: locationsNew
+    })
   }
-
 
   // display infoWindow for a certain marker
-  showinfowindow(marker, location) {
+  showinfowindow(marker) {
+    const activeMarker = this.state.markerAnimation;
+
+    this.closeInfoWindow();
     this.state.infoWindow.open(this.state.map, marker);
+
+    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+    this.setState({
+      markerAnimation: marker,
+    });
+
+    this.fetchLocationInfo(marker);
   }
 
-  fetchLocationInfo(marker, location) {
+  // fetch the info from the third party api
+  fetchLocationInfo(marker) {
     const scope = this;
+    const locations = this.props.locations;
 
     const id = 'DX5ULCFRRHBNJLOUEL4VSM3EMU2OHWMYNXRNO5WITZDRKHOS';
     const secret = 'XI5VCQ2TANMEYDJNJEF4R5WNYLCK2F1JYFZOYJJ33MNMZKF5';
 
-    const lat = location.lat.toFixed(2);
-    const lng = location.lng.toFixed(2);
-    const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=1&query=${location.title}`;
+    const lat = marker.getPosition().lat();
+    const lng = marker.getPosition().lng();
+    let location = {};
+
+    const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=5`;
 
     fetch(request).then(function(response) {
       response.json().then(function(data) {
-        // console.log(data);
-        const location = data.response.venues[0];
-        scope.state.infoWindow.setContent(`${location.name}<br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`);
-
-        scope.setListData(data);
-
+        data.response.venues.forEach(function(venue) {
+          locations.forEach(function(location) {
+            if(location.title === venue.name) {
+              location = venue;
+              scope.state.infoWindow.setContent(`<h1>${location.name}</h1><br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`);
+            }
+          });
+        });
       });
     })
     .catch(function(err) {
@@ -96,45 +124,23 @@ class Maps extends Component {
     })
   }
 
-  // set list information
-  setListData(data) {
-    // remove information of the old location
-    if(document.querySelector('.information-container')) {
-      const oldLocation = document.querySelector('.information-container');
-      oldLocation.remove();
+  closeInfoWindow() {
+    if(this.state.markerAnimation) {
+      this.state.markerAnimation.setAnimation(null);
     }
 
-    // set information of the new location
-    const location = data.response.venues[0];
-    const allLocations = document.querySelectorAll('li');
+    this.setState({
+      markerAnimation: ''
+    })
 
-    // check which location is active by comparing the location name with the text content
-    for(let i = 0; i < allLocations.length; i++) {
-      const activeLocation = allLocations[i];
-
-      if(activeLocation.textContent === location.name) {
-        const information = document.createElement('p');
-        information.setAttribute('class', 'information-container');
-        information.innerText = `${location.categories[0].name}\n${location.location.address}\n${location.location.postalCode} ${location.location.city}`;
-
-        activeLocation.append(information);
-      }
-    }
+    this.state.infoWindow.close();
   }
 
   render() {
     return(
       <div style = {{ display:'flex', wrap:'row' }}>
-        <div className='list-view' style={{ height: '100%', width:'35%', backgroundColor: 'red' }}>
-          <ul className='venue-list'>
-            {this.props.locations.map((location, key) => {
-              return(
-                <li
-                  key={key}
-                >{location.title}</li>
-              )
-            })}
-          </ul>
+        <div style={{ height: '100%', width:'35%', backgroundColor: 'red' }}>
+          <ListView locations={this.props.locations} showinfowindow={this.showinfowindow} closeinfoWindow={this.closeInfoWindow}/>
         </div>
         <div className='map' style={{ height: '100%', width: '70%', position :'absolute', marginLeft:'30%' }}>
         </div>
