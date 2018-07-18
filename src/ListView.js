@@ -50,12 +50,13 @@ class ListView extends Component {
     }, this);
 
     return (
-      <div className='list-view' style={{ height: '100%', width:'100%' }}>
+      <div className='list-view'>
         <input
           className= 'search'
           type= 'text'
           value={this.state.query}
           onChange={this.filterLocations}
+          placeholder={'Type location'}
         />
         <ul className='venue-list'>
           {listView}

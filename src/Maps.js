@@ -117,7 +117,7 @@ class Maps extends Component {
           locations.forEach(function(location) {
             if(location.title === venue.name) {
               location = venue;
-              scope.state.infoWindow.setContent(`<h1>${location.name}</h1><br/>${location.categories[0].name}<br/>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}`);
+              scope.state.infoWindow.setContent(`<h1 style='margin-top:3%; margin-bottom: 0px;'>${location.name}</h1><p style='margin-bottom:1%; margin-top:8%;'><i>${location.categories[0].name}</i></p><p style='margin-top:4%;'>${location.location.address}<br/>${location.location.postalCode} ${location.location.city}</p>`);
             }
           });
         });
@@ -142,11 +142,11 @@ class Maps extends Component {
 
   render() {
     return(
-      <div style = {{ display:'flex', wrap:'row' }}>
-        <div style={{ height: '100%', width:'35%', backgroundColor: 'red' }}>
+      <div className='flex-container'>
+        <div className='list-container'>
           <ListView locations={this.props.locations} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeinfoWindow={this.closeInfoWindow}/>
         </div>
-        <div className='map' style={{ height: '100%', width: '70%', position :'absolute', marginLeft:'30%' }}>
+        <div className='map'>
         </div>
       </div>
     )
