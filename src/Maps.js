@@ -19,7 +19,6 @@ class Maps extends Component {
 
   componentDidMount() {
     window.initMap = this.initMap;
-
     loadMap('https://maps.googleapis.com/maps/api/js?key=AIzaSyDxWjgFKG3lrMXAPUcTy4d8c3AhovpScv8&callback=initMap');
   }
 
@@ -44,15 +43,17 @@ class Maps extends Component {
       infoWindow: googleInfoWindow
     });
 
+    // close info window if user clicks 'x' 
     window.google.maps.event.addListener(googleInfoWindow, "closeclick", function() {
       scope.closeInfoWindow();
     });
 
+    // close info window if user clicks in the map
     window.google.maps.event.addListener(map, "click", function() {
       scope.closeInfoWindow();
     });
 
-    // set markers
+    // set a marker for all locations in the locations array
     const locationsNew = this.state.locationsNew;
     this.props.locations.map((location) => {
       const marker = new window.google.maps.Marker({
@@ -67,9 +68,8 @@ class Maps extends Component {
       marker.addListener('click', function() {
         scope.showinfowindow(marker);
       });
-
+ 
       location.marker = marker;
-      location.display = true;
       locationsNew.push(location);
     });
     this.setState({
@@ -98,6 +98,7 @@ class Maps extends Component {
     const id = 'DX5ULCFRRHBNJLOUEL4VSM3EMU2OHWMYNXRNO5WITZDRKHOS';
     const secret = 'XI5VCQ2TANMEYDJNJEF4R5WNYLCK2F1JYFZOYJJ33MNMZKF5';
 
+    // get the position of the marker
     const lat = marker.getPosition().lat();
     const lng = marker.getPosition().lng();
 
@@ -109,6 +110,7 @@ class Maps extends Component {
       return;
     }
       response.json().then(function(data) {
+        // compare all venues of the response with the given location names, pick available venue
         data.response.venues.forEach(function(venue) {
           locations.forEach(function(location) {
             if(location.title === venue.name) {
@@ -140,7 +142,14 @@ class Maps extends Component {
     return(
       <div className='flex-container' role='main'>
         <div className='list-container'>
-          <ListView locations={this.props.locations} infoWindowState={this.state.infoWindow} markerAnimation={this.state.markerAnimation} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeInfoWindow={this.closeInfoWindow}/>
+          <ListView 
+            locations={this.props.locations} 
+            infoWindowState={this.state.infoWindow} 
+            markerAnimation={this.state.markerAnimation} 
+            locationsNew={this.state.locationsNew} 
+            showinfowindow={this.showinfowindow} 
+            closeInfoWindow={this.closeInfoWindow}
+          />
         </div>
         <div className='map'>
         </div>
@@ -151,6 +160,7 @@ class Maps extends Component {
 
 export default Maps;
 
+// put the script in the html, asynchronous
 function loadMap(request) {
   const body = window.document.querySelector('body');
   const script = window.document.createElement('script');

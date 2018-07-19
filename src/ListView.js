@@ -19,17 +19,19 @@ class ListView extends Component {
   }
 
   filterLocations(e) {
+    // disable mall animations and close all info windows
     this.props.infoWindowState.close();
-
     if(this.props.markerAnimation){
       this.props.markerAnimation.setAnimation(null);
     }
 
+    // get the query for every typed letter
     const { value } = e.target;
     let locationsArray = [];
 
     this.props.locationsNew.forEach(function(location){
       if(location.title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+        // if ther location is part of the results show the marker and make it available for the Location component
         location.marker.setVisible(true);
         locationsArray.push(location);
       } else {
@@ -37,12 +39,14 @@ class ListView extends Component {
       }
     });
     this.setState({
+      // set the state of locations with the results of the search
       locations: locationsArray,
       query: value
     });
   }
 
   render() {
+    // map through all locations and put a location in the list
     const listView = this.state.locations.map((location, index) => {
       return(
         <Location
@@ -56,9 +60,7 @@ class ListView extends Component {
     return (
       <div className='list-view'>
         <input
-          // aria specification
           role='search'
-
           className='search'
           type='text'
           value={this.state.query}
