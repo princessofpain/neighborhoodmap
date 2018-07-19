@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ListView from './ListView';
 
 class Maps extends Component {
@@ -55,7 +54,7 @@ class Maps extends Component {
 
     // set markers
     const locationsNew = this.state.locationsNew;
-    this.props.locations.map((location, key) => {
+    this.props.locations.map((location) => {
       const marker = new window.google.maps.Marker({
         position: new window.google.maps.LatLng(
           location.lat,
@@ -80,8 +79,6 @@ class Maps extends Component {
 
   // display infoWindow for a certain marker
   showinfowindow(marker) {
-    const activeMarker = this.state.markerAnimation;
-
     this.closeInfoWindow();
     this.state.infoWindow.open(this.state.map, marker);
 
@@ -103,7 +100,6 @@ class Maps extends Component {
 
     const lat = marker.getPosition().lat();
     const lng = marker.getPosition().lng();
-    let location = {};
 
     const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=5`;
 
@@ -142,7 +138,7 @@ class Maps extends Component {
 
   render() {
     return(
-      <div className='flex-container' role='<main></main>'>
+      <div className='flex-container' role='main'>
         <div className='list-container'>
           <ListView locations={this.props.locations} infoWindowState={this.state.infoWindow} markerAnimation={this.state.markerAnimation} locationsNew={this.state.locationsNew} showinfowindow={this.showinfowindow} closeInfoWindow={this.closeInfoWindow}/>
         </div>
