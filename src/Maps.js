@@ -101,7 +101,7 @@ class Maps extends Component {
     const lat = marker.getPosition().lat();
     const lng = marker.getPosition().lng();
 
-    const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=10`;
+    const request = `https://api.foursquare.com/v2/venues/search?client_id=${id}&client_secret=${secret}&ll=${lat},${lng}&v=20180717&limit=20`;
 
     fetch(request).then(function(response) {
       if(response.status !== 200) {
