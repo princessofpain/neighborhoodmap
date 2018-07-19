@@ -17,9 +17,9 @@ The Map shows a limited set of restaurants in the area of Berlin, Germany.
 - Use the offline accessibility of the page even if you don´t have an internet connection
 
 ## How to set up
-Clone or download the repo. Run ```npm install``` in your command line. Run ```npm start``` in your to open the html in your browser.
+Clone or download the repo. Run ```npm install``` in your command line. Run ```npm start``` to open the html in your browser.
 
-If you want to test the offline accessibility you have to follow the guidelines of create-react-app. The following information is part of the automized generated README.md (run ```create-react-app``` to instantiate a new project):
+If you want to test the offline accessibility, you have to follow the guidelines of create-react-app. The following information is part of the automatically generated README.md of [create-react-app](https://github.com/facebookincubator/create-react-app).
 
 1. The service worker is only enabled in the production environment, e.g. the output of npm run build. It's recommended that you do not enable an offline-first service worker in a development environment, as it can lead to frustration when previously cached assets are used and do not include the latest changes you've made locally.
 
